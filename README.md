@@ -32,7 +32,7 @@ CSV upload ──► Data preview + charts (pandas, Plotly)
 Agents 1 and 2 analyze the data independently. Agents 3 and 4 receive both of their outputs, so the report and
 recommendations build on the same findings.
 
-Deterministic reference data lives in code, not in prompts:
+Reference limits are defined in code and passed to the agents, so every run checks against the same values:
 
 | Parameter | Limit | Source |
 |---|---|---|
