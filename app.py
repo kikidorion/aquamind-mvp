@@ -16,6 +16,16 @@ import os
 import json
 from datetime import datetime
 
+# ── API key: sidebar input overrides env/secrets (works locally + in production)
+def get_api_key(sidebar_input: str) -> str:
+    if sidebar_input:
+        return sidebar_input
+    # Streamlit Cloud secrets
+    if hasattr(st, "secrets") and "ANTHROPIC_API_KEY" in st.secrets:
+        return st.secrets["ANTHROPIC_API_KEY"]
+    # Railway / any other host env variable
+    return os.environ.get("ANTHROPIC_API_KEY", "")
+
 from agents import (
     run_data_intelligence_agent,
     run_quality_agent,
@@ -98,12 +108,13 @@ with st.sidebar:
     st.markdown("*AI-Native Water Intelligence*")
     st.divider()
 
-    api_key = st.text_input(
+    _sidebar_key = st.text_input(
         "Anthropic API Key",
         type="password",
-        placeholder="sk-ant-...",
-        help="Get your key at console.anthropic.com",
+        placeholder="sk-ant-... (or set in secrets)",
+        help="Get your key at console.anthropic.com. Leave blank if set as an environment variable.",
     )
+    api_key = get_api_key(_sidebar_key)
 
     st.divider()
     company_name = st.text_input("Company Name", value="Acme Industrial Corp.")
